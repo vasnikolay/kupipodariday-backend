@@ -23,11 +23,17 @@ export class UsersService {
     return await this.userRepository.findOneBy({ username });
   }
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const user = this.userRepository.create(createUserDto);
-    user.password = await this.hashService.getHashPassword(
-      createUserDto.password,
-    );
-    return await this.userRepository.save(user);
+    try {
+      const user = this.userRepository.create(createUserDto);
+      user.password = await this.hashService.getHashPassword(
+        createUserDto.password,
+      );
+      return await this.userRepository.save(user);
+    } catch (e) {
+      if (e.code === '23505') {
+        throw new BadRequestException('Username or email already exists');
+      }
+    }
   }
 
   async findById(id: number): Promise<User> {

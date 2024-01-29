@@ -6,7 +6,7 @@ import { Offer } from '../../offers/entities/offer.entity';
 import { Wishlist } from '../../wishlists/entities/wishlist.entity';
 @Entity()
 export class User extends BaseEntity {
-  @Column()
+  @Column({ unique: true })
   @IsString()
   @Length(2, 30)
   username: string;
